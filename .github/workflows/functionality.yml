@@ -1,6 +1,7 @@
 name: Functionality tests
 
 on:
+  push:
   merge_group:
   pull_request:
 
