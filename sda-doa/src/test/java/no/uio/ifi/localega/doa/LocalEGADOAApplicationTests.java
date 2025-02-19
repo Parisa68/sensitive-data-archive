@@ -113,7 +113,7 @@ class LocalEGADOAApplicationTests {
         HttpResponse<JsonNode> response = Unirest.get(doaUrl + "/metadata/datasets/EGAD00010000919/files").header(HttpHeaders.AUTHORIZATION, "Bearer " + validToken).asJson();
         int status = response.getStatus();
         Assertions.assertEquals(HttpStatus.OK.value(), status);
-        Assertions.assertEquals("[{\"fileId\":\"EGAF0000000000014\",\"datasetId\":\"EGAD00010000919\",\"displayFileName\":\"body.enc\",\"fileName\":\"test/body.enc\",\"fileSize\":null,\"unencryptedChecksum\":null,\"unencryptedChecksumType\":null,\"decryptedFileSize\":null,\"decryptedFileChecksum\":null,\"decryptedFileChecksumType\":null,\"fileStatus\":\"READY\"}]", response.getBody().toString());
+        Assertions.assertEquals("[{\"fileId\":\"EGAF00000000014\",\"datasetId\":\"EGAD00010000919\",\"displayFileName\":\"body.enc\",\"fileName\":\"test/body.enc\",\"fileSize\":null,\"unencryptedChecksum\":null,\"unencryptedChecksumType\":null,\"decryptedFileSize\":null,\"decryptedFileChecksum\":null,\"decryptedFileChecksumType\":null,\"fileStatus\":\"READY\"}]", response.getBody().toString());
     }
 
     @Test
