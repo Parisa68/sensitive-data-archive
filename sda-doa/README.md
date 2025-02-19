@@ -2,8 +2,6 @@
 ![Java CI](https://github.com/neicnordic/sda-doa/workflows/Java%20CI/badge.svg)
 
 
-
-
 ## Configuration
 
 Environment variables used:
