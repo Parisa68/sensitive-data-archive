@@ -118,6 +118,7 @@ jobs:
           distribution: zulu
           java-version: 21
           cache: maven
+          cache-dependency-path: '**/pom.xml'
 
       - name: create maven settings.xml
         uses: s4u/maven-settings-action@v3.0.0
@@ -133,7 +134,7 @@ jobs:
         shell: bash
         run: cp /home/runner/.m2/settings.xml ./settings.xml
 
-      - name: Docker compose deploy for ${{ matrix.storage-type }} storage
+      - name: Run integration test for ${{ matrix.storage-type }} storage
         run: |
           docker compose -f ../.github/integration/sda-doa-${{ matrix.storage-type }}-outbox.yml run integration_test
 
@@ -141,7 +142,9 @@ jobs:
         if: failure()
         run: docker logs doa
 
-      - name: Docker Service Logs
+      - name: Container List
         if: failure()
         run: |
           docker ps
+
+
