@@ -10,6 +10,7 @@ jobs:
     outputs:
       sda-download: ${{ steps.changes.outputs.sda-download }}
       sftp-inbox: ${{ steps.changes.outputs.sftp-inbox }}
+      sda-doa: ${{ steps.changes.outputs.sda-doa }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,6 +22,8 @@ jobs:
               - 'sda-download/**'
             sftp-inbox:
             - 'sda-sftp-inbox/**'
+            sda-doa:
+            - 'sda-doa/**'
 
   sda-download:
     needs: check_changes
@@ -91,3 +94,54 @@ jobs:
           cd sda-sftp-inbox
           sudo apt-get install expect -y
           sh ./dev_utils/sftp-testing-pass.sh
+
+  sda-doa:
+    name: sda-doa-integration-${{ matrix.storage-type }}
+    needs: check_changes
+    if: needs.check_changes.outputs.sda-doa == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./sda-doa
+    strategy:
+      fail-fast: true
+      matrix:
+        storage-type: [s3, posix]
+    env:
+      PR_NUMBER: ${{ github.event.number }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4.5.0
+        with:
+          distribution: zulu
+          java-version: 21
+          cache: maven
+
+      - name: create maven settings.xml
+        uses: s4u/maven-settings-action@v3.0.0
+        with:
+          servers: |
+            [{
+              "id":"github-fega-norway",
+              "username": "${{github.actor}}",
+              "password": "${{ secrets.GITHUB_TOKEN }}"
+            }]
+
+      - name: Copy settings.xml to sda-doa root
+        shell: bash
+        run: cp /home/runner/.m2/settings.xml ./settings.xml
+
+      - name: Docker compose deploy for ${{ matrix.storage-type }} storage
+        run: |
+          docker compose -f ../.github/integration/sda-doa-${{ matrix.storage-type }}-outbox.yml run integration_test
+
+      - name: SDA DOA Run Logs
+        if: failure()
+        run: docker logs doa
+
+      - name: Docker Service Logs
+        if: failure()
+        run: |
+          docker ps
