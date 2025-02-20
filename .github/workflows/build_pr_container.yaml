@@ -213,4 +213,4 @@ jobs:
         run: cp /home/runner/.m2/settings.xml ./sda-doa/settings.xml
 
       - name: Test sda-doa for ${{ matrix.storage-type }} storage
-        run: docker compose -f ../.github/integration/sda-doa-${{ matrix.storage-type }}-outbox.yml run integration_test
+        run: docker compose -f ../.github/integration/sda-doa-${{ matrix.storage }}-outbox.yml run integration_test
