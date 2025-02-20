@@ -55,7 +55,7 @@ jobs:
 
       - name: Pull PR containers
         run : |
-          for t in -doa; do
+          for t in -rabbitmq -doa; do
             docker pull ghcr.io/parisa68/sensitive-data-archive:PR${{ github.event.number }}$t
           done
           docker pull ghcr.io/parisa68/sensitive-data-archive:PR${{ github.event.number }}
