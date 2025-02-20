@@ -1,7 +1,6 @@
 name: Build PR container
 
 on:
-  push:
   pull_request:
     paths-ignore:
       - ".gitignore"
