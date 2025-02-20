@@ -5,7 +5,6 @@ on:
     branches:
       - main
     paths-ignore:
-      - ".github/**"
       - ".gitignore"
       - "**/*.md"
       - "charts/**"
@@ -56,35 +55,16 @@ jobs:
 
       - name: Pull PR containers
         run : |
-          for t in -download -postgres -rabbitmq -sftp-inbox; do
+          for t in -doa; do
             docker pull ghcr.io/${{ github.repository }}:PR${{ github.event.number }}$t
           done
           docker pull ghcr.io/${{ github.repository }}:PR${{ github.event.number }}
 
-      - name: Retag PR image for download
+      - name: Retag PR image for doa
         run: |
-          docker tag ghcr.io/${{ github.repository }}:PR${{ github.event.number }}-download ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-download
-          docker push ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-download
+          docker tag ghcr.io/${{ github.repository }}:PR${{ github.event.number }}-doa ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-doa
+          docker push ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-doa
 
-      - name: Retag PR image for postgres
-        run: |
-          docker tag ghcr.io/${{ github.repository }}:PR${{ github.event.number }}-postgres ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-postgres
-          docker push ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-postgres
-
-      - name: Retag PR image for rabbitmq
-        run: |
-          docker tag ghcr.io/${{ github.repository }}:PR${{ github.event.number }}-rabbitmq ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-rabbitmq
-          docker push ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-rabbitmq
-
-      - name: Retag PR image for sftp-inbox
-        run: |
-          docker tag ghcr.io/${{ github.repository }}:PR${{ github.event.number }}-sftp-inbox ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-sftp-inbox
-          docker push ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}-sftp-inbox
-
-      - name: Retag PR image for sensitive-data-archive
-        run: |
-          docker tag ghcr.io/${{ github.repository }}:PR${{ github.event.number }} ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}
-          docker push ghcr.io/${{ github.repository }}:${{ needs.tag_release.outputs.tag }}
 
   bump_chart_version:
     needs: [tag_release, push_to_registry]
